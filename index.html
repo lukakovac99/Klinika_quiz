@@ -85,7 +85,7 @@
     let currentQuestion = localStorage.getItem(questionKey);
 
     if (!currentQuestion || localStorage.getItem('lastUpdatedMonth') != currentMonth) {
-      currentQuestion = 'What will be the temperature on New Year\'s Eve?'; // Update this manually each month
+      currentQuestion = 'Koliko sterilizacij bomo naredili v januarju 2025?'; // Update this manually each month
       localStorage.setItem(questionKey, currentQuestion);
       localStorage.setItem('lastUpdatedMonth', currentMonth);
       localStorage.setItem(correctAnswerKey, null); // Reset correct answer
