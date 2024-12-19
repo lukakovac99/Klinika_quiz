@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monthly Prediction Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+    }
+    .question {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    .form {
+      margin-bottom: 20px;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 70%;
+      margin-right: 10px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .leaderboard {
+      margin-top: 30px;
+      text-align: left;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Monthly Prediction Quiz</h1>
+    <div class="question" id="question">What will be the temperature on New Year's Eve?</div>
+    <div class="form">
+      <input type="text" id="answer" placeholder="Enter your prediction">
+      <button onclick="submitAnswer()">Submit</button>
+    </div>
+    <div class="leaderboard">
+      <h2>Leaderboard</h2>
+      <table id="leaderboard">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Points</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const leaderboardKey = 'quizLeaderboard';
+    const questionKey = 'currentQuestion';
+    const correctAnswerKey = 'correctAnswer';
+    const currentMonth = new Date().getMonth();
+
+    // Load leaderboard
+    const leaderboard = JSON.parse(localStorage.getItem(leaderboardKey)) || [];
+
+    // Check and update the question
+    const questionElement = document.getElementById('question');
+    let currentQuestion = localStorage.getItem(questionKey);
+
+    if (!currentQuestion || localStorage.getItem('lastUpdatedMonth') != currentMonth) {
+      currentQuestion = 'What will be the temperature on New Year\'s Eve?'; // Update this manually each month
+      localStorage.setItem(questionKey, currentQuestion);
+      localStorage.setItem('lastUpdatedMonth', currentMonth);
+      localStorage.setItem(correctAnswerKey, null); // Reset correct answer
+    }
+    questionElement.textContent = currentQuestion;
+
+    // Render leaderboard
+    function renderLeaderboard() {
+      const tbody = document.querySelector('#leaderboard tbody');
+      tbody.innerHTML = '';
+      leaderboard
+        .sort((a, b) => b.points - a.points)
+        .forEach(player => {
+          const row = document.createElement('tr');
+          row.innerHTML = `<td>${player.name}</td><td>${player.points}</td>`;
+          tbody.appendChild(row);
+        });
+    }
+
+    renderLeaderboard();
+
+    // Submit answer
+    function submitAnswer() {
+      const name = prompt('Enter your name:');
+      const answer = parseFloat(document.getElementById('answer').value);
+
+      if (!name || isNaN(answer)) {
+        alert('Please enter a valid name and prediction!');
+        return;
+      }
+
+      const existingPlayer = leaderboard.find(player => player.name === name);
+      if (!existingPlayer) {
+        leaderboard.push({ name, points: 0, lastAnswer: answer });
+      } else {
+        existingPlayer.lastAnswer = answer;
+      }
+
+      localStorage.setItem(leaderboardKey, JSON.stringify(leaderboard));
+      document.getElementById('answer').value = '';
+      alert('Answer submitted!');
+    }
+
+    // Set correct answer and calculate points
+    function setCorrectAnswer() {
+      const correctAnswer = parseFloat(prompt('Enter the correct answer:'));
+      if (isNaN(correctAnswer)) {
+        alert('Please enter a valid number!');
+        return;
+      }
+
+      localStorage.setItem(correctAnswerKey, correctAnswer);
+
+      leaderboard.forEach(player => {
+        const difference = Math.abs(player.lastAnswer - correctAnswer);
+        player.points += 100 - difference; // Adjust scoring logic as needed
+      });
+
+      localStorage.setItem(leaderboardKey, JSON.stringify(leaderboard));
+      renderLeaderboard();
+      alert('Correct answer updated and scores calculated!');
+    }
+
+    // For admin use to set the correct answer
+    window.setCorrectAnswer = setCorrectAnswer;
+  </script>
+</body>
+</html>
