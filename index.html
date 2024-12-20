@@ -82,14 +82,15 @@
 
     // Check and update the question
     const questionElement = document.getElementById('question');
-    let currentQuestion = localStorage.getItem(questionKey);
+    // let currentQuestion = localStorage.getItem(questionKey);
+    let currentQuestion = 'Že nekaj let zaključujemo leto s tradicionalnimi urgentnimi operacijami na Silvestrovo. Koliko urgentnih posegov se nam obeta letos? (Napiši samo številko, brez ločil ali drugih znakov)';
 
-    if (!currentQuestion || localStorage.getItem('lastUpdatedMonth') != currentMonth) {
-      currentQuestion = 'Že nekaj let zaključujemo leto s tradicionalnimi urgentnimi operacijami na Silvestrovo. Koliko urgentnih posegov se nam obeta letos? (Napiši samo številko, brez ločil ali drugih znakov)'; // Update this manually each month
-      localStorage.setItem(questionKey, currentQuestion);
-      localStorage.setItem('lastUpdatedMonth', currentMonth);
-      localStorage.setItem(correctAnswerKey, null); // Reset correct answer
-    }
+    // if (!currentQuestion || localStorage.getItem('lastUpdatedMonth') != currentMonth) {
+    //   currentQuestion = 'Že nekaj let zaključujemo leto s tradicionalnimi urgentnimi operacijami na Silvestrovo. Koliko urgentnih posegov se nam obeta letos? (Napiši samo številko, brez ločil ali drugih znakov)'; // Update this manually each month
+    //   localStorage.setItem(questionKey, currentQuestion);
+    //   localStorage.setItem('lastUpdatedMonth', currentMonth);
+    //   localStorage.setItem(correctAnswerKey, null); // Reset correct answer
+    // }
     questionElement.textContent = currentQuestion;
 
     // Render leaderboard
