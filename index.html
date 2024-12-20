@@ -54,7 +54,7 @@
     <h1>December 2024</h1>
     <div class="question" id="question">test</div> 
     <div class="form">
-      <input type="text" id="answer" placeholder="Enter your prediction">
+      <input type="number" id="answer" placeholder="Enter your prediction">
       <button onclick="submitAnswer()">Submit</button>
     </div>
     <h3>Rok za oddajo odgovora je 30. 12. 2024.h3>
@@ -109,27 +109,28 @@
 
     renderLeaderboard();
 
-    // Submit answer
-    function submitAnswer() {
-      const name = prompt('Enter your name:');
-      const answer = parseFloat(document.getElementById('answer').value);
-
-      if (!name || isNaN(answer)) {
-        alert('Please enter a valid name and prediction!');
-        return;
-      }
-
-      const existingPlayer = leaderboard.find(player => player.name === name);
-      if (!existingPlayer) {
-        leaderboard.push({ name, points: 0, lastAnswer: answer });
-      } else {
-        existingPlayer.lastAnswer = answer;
-      }
-
-      localStorage.setItem(leaderboardKey, JSON.stringify(leaderboard));
-      document.getElementById('answer').value = '';
-      alert('Answer submitted!');
+  // Submit answer
+  function submitAnswer() {
+    const name = prompt('Enter your name:');
+    const answerField = document.getElementById('answer');
+    const answer = parseInt(answerField.value, 10);
+  
+    if (!name || isNaN(answer) || answer.toString() !== answerField.value.trim()) {
+      alert('Please enter a valid name and an integer prediction!');
+      return;
     }
+  
+    const existingPlayer = leaderboard.find(player => player.name === name);
+    if (!existingPlayer) {
+      leaderboard.push({ name, points: 0, lastAnswer: answer });
+    } else {
+      existingPlayer.lastAnswer = answer;
+    }
+  
+    localStorage.setItem(leaderboardKey, JSON.stringify(leaderboard));
+    answerField.value = '';
+    alert('Answer submitted!');
+  }
 
     // Set correct answer and calculate points
     function setCorrectAnswer() {
